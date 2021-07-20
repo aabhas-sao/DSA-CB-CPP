@@ -1,3 +1,3 @@
-c[i] = '\0';
-        string p(c);
-        
+for(auto x: v) {
+        cout << x << " ";
+    }
