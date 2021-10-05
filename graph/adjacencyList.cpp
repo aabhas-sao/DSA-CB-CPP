@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include <unordered_map>
+#include <queue>
 using namespace std;
 
 class Graph {
@@ -9,16 +10,16 @@ public:
     void addEdge(string x, string y, bool directed , int weight) {
         list<pair<string, int>> l;
         m[x].push_back(make_pair(y, weight));
-        if(!directed) {
+        if (!directed) {
             m[y].push_back(make_pair(x, weight));
         }
     }
 
     void print() {
-        for (auto city: m) {
+        for (auto city : m) {
             cout << city.first << "-> ";
             auto destinations = city.second;
-            for(auto destination: destinations) {
+            for (auto destination : destinations) {
                 cout << destination.first << " " << destination.second << ", ";
             }
             cout << endl;

@@ -1,38 +1,54 @@
 #include <iostream>
 #include <queue>
+#include <unordered_map>
 #include <vector>
 using namespace std;
 
-typedef pair<int, int> node;
-
-class NodeCompare {
-    bool operator()(node n1, node n2) {
-        // if(n1.second != n2.second) {
-        //     return n1.second < n2.second;
-        // }
-        return n1.first < n2.first;
-    }
-}
-
 int main() {
-    int t;
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    int t, n, k;
+    int a[100000];
     cin >> t;
+
     while (t--) {
-        int n, k;
         cin >> n >> k;
-        
-        priority_queue<node, vector<node>, NodeCompare> pq;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        unordered_map<int, int> u;
 
-        for(int i = 0; i < n; i++) {
-            int x;
-            cin >> x;
-            pq.push({x, 0});
-        }
 
-        while (!pq.empty()) {
-            cout << pq.top().first << endl;
-            pq.pop();
+        int times;
+        vector<int> v(k, -1);
+
+
+        for (int i = 0; i < n; i++) {
+            times = k;
+            cin >> a[i];
+            if (pq.size() == k) {
+                pq.pop();
+            }
+
+            u[a[i]]++;
+            pq.push({u[a[i]], a[i]});
+
+            int freqTop;
+
+            while (!pq.empty() && times--) {
+                cout << pq.top().second << " ";
+                pq.pop();
+                freqTop = pq.top().first;
+                while (!pq.empty() && pq.top().first == freqTop && times--) {
+                    v.push_back(pq.top().second);
+                }
+                for (auto x : v) {
+                    if (x != -1) {
+                        cout << x << " ";
+                    }
+                }
+                v.clear();
+            }
         }
     }
-    return 0;
 }

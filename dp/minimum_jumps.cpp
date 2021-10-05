@@ -1,53 +1,52 @@
-#include <iostream>
-#include <climits>
+#include <bits/stdc++.h>
 using namespace std;
 
-
-int minJumps(int a[], int n, int i, int dp[]) {
-    if(i >= n) {
+int mjp(int i, int n, int a[], int dp[]) {
+    if (i >= n - 1) {
         return 0;
     }
 
-    if(a[i] == 0) {
-        return INT_MAX;
-    }
-
-    if (dp[i] != -1) {
-        return dp[i];
-    }
-
+    if (dp[i] != -1) return dp[i];
+    int currentJump = a[i];
     int local = INT_MAX;
 
-    
-    for (int j = 1; j <= a[i]; j++) {
-        int res = minJumps(a, n, i + j, dp);
-        if(res == INT_MAX) continue;
-        local = min(res, local);
+    for (int k = 1; k <= a[i]; k++) {
+        local = min(local, mjp(i + k, n, a, dp));
     }
 
-    if(local == INT_MAX) return INT_MAX;
+    if (local == INT_MAX) {
+        dp[i] = INT_MAX;
+        return INT_MAX;
+    }
 
     return dp[i] = local + 1;
 }
 
 int main() {
-    int t;
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    int t, n;
+    int a[1001];
+    int dp[1001];
+
     cin >> t;
     while (t--) {
-        int n;
         cin >> n;
-        int a[n];
         for (int i = 0; i < n; i++) {
             cin >> a[i];
         }
 
-        int dp[n];
+        memset(dp, -1, sizeof dp);
 
-        for (int i = 0; i < n; i++) {
-            dp[i] = -1;
+        cout << mjp(0, n, a, dp) << endl;
+
+        for (int i = 0; i <= n; i++) {
+            cout << dp[i] << " ";
         }
+        cout << endl;
 
-        cout << minJumps(a, n, 0, dp) << endl;
     }
 
     return 0;

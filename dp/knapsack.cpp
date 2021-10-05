@@ -3,55 +3,55 @@
 #include <vector>
 using namespace std;
 
-typedef pair<int, int> node;
-
-int knapsack(node items[], int n, int i, int capacity, vector<vector<int>>& dp) {
-    // base cases
-    if (i == n) {
+int knapsack(int n, vector<int> prices, vector<int> wts, int wt, vector<vector<int>>& dp) {
+    // base case ( if all items have been selected or capcity is full)
+    if (n == 0 || wt == 0) {
         return 0;
     }
 
-    // if already in dp array
-    if(dp[capacity][i] != -1) {
-        return dp[capacity][i];
+    if (dp[n - 1][wt - 1] != -1) {
+        return dp[n - 1][wt - 1];
     }
 
-    cout << dp[capacity][i] << endl;
-
-    if(capacity - items[i].first >= 0) {
-        dp[capacity - items[i].first][i + 1] = knapsack(items, n, i + 1, capacity - items[i].first, dp);
-        int op1 = items[i].second + dp[capacity - items[i].first][i + 1];
-        dp[capacity][i + 1] = knapsack(items, n, i + 1, capacity, dp);
-        
-        return max(op1, dp[capacity][i + 1]);
+    int inc = 0, exc = 0;
+    if (wts[n - 1] <= wt) {
+        inc = prices[n - 1] + knapsack(n - 1, prices, wts, wt - wts[n - 1], dp);
     }
 
-    return dp[capacity][i + 1] = knapsack(items, n, i + 1, capacity, dp);
+    exc = knapsack(n - 1, prices, wts, wt, dp);
+
+    return dp[n - 1][wt - 1] = max(inc, exc);
 }
 
 int main() {
-    int n, k;
-    cin >> n >> k;
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    int n, capacity;
+    cin >> n >> capacity;
+    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, -1));
+    int x;
 
-    node items[n];
-
-    vector<vector<int>> dp(k, vector<int>(n, -1));
-
-    for(int i = 0; i < n; i++) {
-        cin >> items[i].first;
+    vector<int> wts;
+    for (int i = 0; i < n; i++) {
+        cin >> x;
+        wts.push_back(x);
+    }
+    vector<int> prices;
+    for (int i = 0; i < n; i++) {
+        cin >> x;
+        prices.push_back(x);
     }
 
-    for(int i = 0; i < n; i++) {
-        cin >> items[i].second;
-    }
+    cout << knapsack(n, prices, wts, capacity, dp) << endl;
 
-    knapsack(items, n, 0, k, dp);
-
-    for (auto x: dp) {
-        for (auto y: x) {
-            cout << y << " ";
+    for (auto x : dp) {
+        for (auto z : x) {
+            cout << z << " ";
         }
         cout << endl;
     }
+
     return 0;
 }
